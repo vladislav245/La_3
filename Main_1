@@ -1,0 +1,169 @@
+#include <ctime>
+#include <locale>
+#include "L_ptr.h"
+#include <string>
+
+using namespace std;
+
+template <typename T>
+class stackk : public L_ptr<T> {
+
+public:
+
+	stackk() : L_ptr<T>() { };
+
+	void Push(List<T>* g) {
+
+		List<T>* tmp = new List<T>;
+		*tmp = g;
+
+		if (this->size == 0) {
+			this->end = tmp;
+		}
+		else tmp->next = this->head;
+
+		this->head = tmp;
+		this->size++;
+	};
+
+};
+
+template <typename T>
+class queuee : public L_ptr<T> {
+
+public:
+
+	queuee() : L_ptr<T>() { };
+
+	void Push(List<T>* g) {
+
+		List<T>* tmp = new List<T>;
+		*tmp = g;
+
+
+		if (this->size == 0) {
+			this->end = tmp;
+			this->head = tmp;
+		}
+		else {
+			this->end->next = tmp;
+			this->end = tmp;
+		}
+
+		this->size++;
+	};
+
+};
+
+
+
+struct pri_queue
+{
+	int num;
+	int priority;
+	pri_queue* next = nullptr;
+};
+
+
+
+void insert(pri_queue*& main, pri_queue* new_el) {
+
+
+	pri_queue* tmp = main;
+	pri_queue* left = main;
+	
+	while (tmp != nullptr && new_el->priority < tmp->priority) {
+		left = tmp;
+		tmp = tmp->next;
+	}
+
+
+	if (tmp != left) {
+		left->next = new_el;
+	}
+	else main = new_el;
+
+	new_el->next = tmp;
+
+}
+
+
+int main()
+{
+	setlocale(LC_ALL, "Rus");
+	srand(time(NULL));
+
+     pri_queue* main = new pri_queue;
+	cout << "Введите данные: ";
+	cin >> main->num;
+	cout << "Введите приоритет: ";
+	cin >> main->priority;
+
+	int count = 0;
+
+
+	for (int i = 0; ; i++) {
+		pri_queue* tmp = new pri_queue;
+		string t;
+
+		cout << "Введите данные или закончите цикл элементом % ";
+
+		cin >> t;
+		if (t == "%") {
+			cout << endl << "Цикл закончен" << endl;
+			break;
+		}
+
+		tmp->num = stoi(t);
+		cout << "Введите приоритет: ";
+		cin >> tmp->priority;
+
+		cout << endl << "Элемент добавлен" << endl;
+
+		insert(main, tmp);
+		count++;
+	}
+
+	pri_queue* tmp = main;
+	for (int i = 0; i != count + 1; i++) {
+
+		cout << i << " " << tmp->num << endl;
+		tmp = tmp->next;
+	}
+	
+	//
+	
+	
+
+	queuee<int> a;
+	stackk<int> b;
+
+	cout << endl << endl << endl << endl;
+	cout << "Введите ко-во элементов: ";
+	cin >> count;
+	for (int i = 0; i != count; i++) {
+		List<int>* tmp1 = new List<int>;
+		cout << "Введите данные для элемента: ";
+		cin >> tmp1->number;
+
+		a.Push(tmp1);
+		b.Push(tmp1);
+	}
+
+	cout << endl << "Очередь" << endl;
+	for (int i = 0; i != count; i++) {
+		cout << a[i] << endl;
+	}
+
+	cout << endl << "Стек" << endl;
+	for (int i = 0; i != count; i++) {
+		cout << b[i] << endl;
+	}
+
+	a.Swap(0, 3);
+
+	a.Display();
+
+
+	return 0;
+}
